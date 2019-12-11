@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_STORAGE_PERMS = 0;
     private static final int REQUEST_CHECK_SETTINGS = 100;
     private TextView gps_time;//= (TextView) findViewById(R.id.gps_time);
-    private TextView text_apprun;
     private int count = 0;
     private String timeUpdate;
 
@@ -57,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationSettingsRequest mLocationSettingsRequest;
     private LocationCallback mLocationCallback;
     private Location mCurrentLocation;
+
     private long gps_time_value;
     private LocationResult locationResult;
     private SimpleDateFormat sdf;
@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         gps_time = (TextView) findViewById(R.id.gps_time);
-        text_apprun = (TextView) findViewById(R.id.text_apprun);
+        //text_apprun = (TextView) findViewById(R.id.text_apprun);
 
-        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss_SS", Locale.getDefault());
+        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS", Locale.getDefault());
         ButterKnife.bind(this);
         if(hasPermissions()){
 
@@ -93,14 +93,14 @@ public class MainActivity extends AppCompatActivity {
 
                 //updateLocationUI();
                 if(mCurrentLocation != null) {
-                    gps_time.setText("Gps time : " + timeUpdate);
+                    gps_time.setText("Gps clock : " + timeUpdate);
                 }
             }
         };
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(50);
-        mLocationRequest.setFastestInterval(20);
+        mLocationRequest.setInterval(10);
+        mLocationRequest.setFastestInterval(5);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
@@ -108,30 +108,13 @@ public class MainActivity extends AppCompatActivity {
         mLocationSettingsRequest = builder.build();
 
         //mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-        //startLocationUpdates();
-        text_apprun.setText("tadaa");
-        app_run();
+        startLocationUpdates();
+        //text_apprun.setText("tadaa");
+        //app_run();
 
 
     }
-
-    private void app_run(){
-        while (true) {
-            //text_apprun.setText(count);
-            try {
-                wait(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            count++;
-        }
-    }
-    /*
-    private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
-    }*/
+    
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void startLocationUpdates() {
         mSettingsClient
@@ -179,7 +162,9 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         //updateLocationUI();
-                        gps_time.setText("Gps time : " + timeUpdate);
+                        if(mCurrentLocation!=null) {
+                            gps_time.setText("Gps time : " + timeUpdate);
+                        }
                     }
                 });
     }
